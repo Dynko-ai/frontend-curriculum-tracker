@@ -4,7 +4,7 @@ An interactive HTML checklist application with gamification features for trackin
 
 ## 🚀 Quick Start
 
-1. Open the project folder in VS Code
+1. Open the project folder in Cursor
 2. Install the "Live Server" extension if you haven't already
 3. Right-click on `index.html` and select "Open with Live Server"
 4. Start tracking your progress and earning XP!

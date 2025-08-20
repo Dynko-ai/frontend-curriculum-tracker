@@ -10,11 +10,11 @@ This repository contains an interactive HTML checklist application with gamifica
 
 ### Prerequisites
 - Modern web browser (Chrome, Firefox, Safari, Edge)
-- VS Code with Live Server extension (recommended)
+- Cursor with Live Server extension (recommended)
 - No build process required - pure HTML/CSS/JavaScript
 
 ### Local Development
-1. Open project folder in VS Code
+1. Open project folder in Cursor
 2. Right-click on `index.html` and select "Open with Live Server"
 3. Application will open at `http://localhost:5500` (or similar)
 4. Changes auto-reload with Live Server

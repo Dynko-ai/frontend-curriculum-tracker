@@ -16,7 +16,7 @@ window.CURRICULUM_DATA = {
           "tasks": [
             {
               "id": "w1d1t1",
-              "text": "Install VS Code with extensions: Prettier, ESLint, Live Server",
+              "text": "Install Cursor with extensions: Prettier, ESLint, Live Server",
               "type": "setup",
               "xp": 10
             },
