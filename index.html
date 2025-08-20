@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive Frontend UI/UX Developer Curriculum Tracker with Gamification">
+    <title>Frontend Developer Curriculum Tracker</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/gamification.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Frontend Developer Curriculum</h1>
+            <div class="user-stats">
+                <div class="level-badge" id="levelBadge">
+                    <span class="level-text">Level 1</span>
+                </div>
+                <div class="xp-container">
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xpFill"></div>
+                    </div>
+                    <span class="xp-text" id="xpText">0 / 100 XP</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Overall Progress -->
+            <section class="progress-overview">
+                <h2>Overall Progress</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="overallProgress"></div>
+                </div>
+                <div class="progress-stats">
+                    <span id="completedTasks">0</span> of <span id="totalTasks">0</span> tasks completed
+                    (<span id="completionPercentage">0</span>%)
+                </div>
+            </section>
+
+            <!-- Achievement Notifications -->
+            <div class="achievement-notification" id="achievementNotification">
+                <div class="achievement-content">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-text">
+                        <h3 id="achievementTitle">Achievement Unlocked!</h3>
+                        <p id="achievementDescription">You've earned a new achievement!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements Panel -->
+            <section class="achievements-panel">
+                <h2>Achievements</h2>
+                <div class="achievements-grid" id="achievementsGrid">
+                    <!-- Achievement badges will be dynamically populated -->
+                </div>
+            </section>
+
+            <!-- Curriculum Weeks -->
+            <section class="curriculum-content">
+                <div class="weeks-container" id="weeksContainer">
+                    <!-- Week sections will be dynamically populated -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Frontend Developer Curriculum Tracker</p>
+            <button class="reset-progress-btn" id="resetProgressBtn">Reset Progress</button>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="scripts/checklist.js"></script>
+    <script src="scripts/gamification.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
