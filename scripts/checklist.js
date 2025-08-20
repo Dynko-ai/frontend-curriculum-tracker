@@ -13,16 +13,17 @@ class ChecklistManager {
     }
 
     /**
-     * Load curriculum data from JSON file
+     * Load curriculum data from embedded data
      */
     async loadCurriculum() {
         try {
-            const response = await fetch('./data/curriculum.json');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            // Use embedded data instead of fetch to avoid CORS issues
+            if (window.CURRICULUM_DATA) {
+                this.curriculum = window.CURRICULUM_DATA;
+                return this.curriculum;
+            } else {
+                throw new Error('Curriculum data not found');
             }
-            this.curriculum = await response.json();
-            return this.curriculum;
         } catch (error) {
             console.error('Error loading curriculum:', error);
             // Fallback data structure
