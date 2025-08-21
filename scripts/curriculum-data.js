@@ -31,6 +31,12 @@ window.CURRICULUM_DATA = {
               "text": "Create a basic HTML5 document structure",
               "type": "code",
               "xp": 15
+            },
+            {
+              "id": "w1d1t4",
+              "text": "Configure GitHub Pages for project deployment",
+              "type": "setup",
+              "xp": 20
             }
           ]
         },
