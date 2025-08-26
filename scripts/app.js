@@ -6,6 +6,7 @@ class CurriculumApp {
     constructor() {
         this.checklistManager = new ChecklistManager();
         this.gamificationSystem = new GamificationSystem();
+        this.quizSystem = new QuizSystem();
         this.isInitialized = false;
     }
 
@@ -25,11 +26,18 @@ class CurriculumApp {
             // Set up gamification callbacks
             this.setupGamificationCallbacks();
             
+            // Initialize quiz system
+            this.quizSystem.init();
+            this.setupQuizCallbacks();
+            
             // Render the UI
             this.renderUI();
             
             // Update progress displays
             this.updateProgressDisplays();
+            
+            // Debug: Log current progress state
+            this.debugProgressState();
             
             this.isInitialized = true;
             console.log('Curriculum app initialized successfully');
@@ -37,6 +45,56 @@ class CurriculumApp {
             console.error('Error initializing app:', error);
             this.showError('Failed to load curriculum data. Please refresh the page.');
         }
+    }
+
+    /**
+     * Debug progress state for troubleshooting
+     */
+    debugProgressState() {
+        const completedTasks = this.checklistManager.completedTasks;
+        const playerStats = this.gamificationSystem.getPlayerStats();
+        const achievementStats = this.gamificationSystem.getAchievements();
+        
+        console.log('=== PROGRESS DEBUG INFO ===');
+        console.log('Completed Tasks:', completedTasks);
+        console.log('Total Completed:', completedTasks.length);
+        console.log('Player Stats:', playerStats);
+        console.log('Unlocked Achievements:', achievementStats.filter(a => a.unlocked));
+        console.log('LocalStorage - completedTasks:', localStorage.getItem('completedTasks'));
+        console.log('LocalStorage - playerData:', localStorage.getItem('playerData'));
+        
+        // Check if data is loading properly
+        const rawCompleted = localStorage.getItem('completedTasks');
+        if (rawCompleted) {
+            const parsed = JSON.parse(rawCompleted);
+            console.log('Raw localStorage completed tasks:', parsed);
+            console.log('Manager loaded tasks:', this.checklistManager.completedTasks);
+            console.log('Tasks match:', JSON.stringify(parsed) === JSON.stringify(this.checklistManager.completedTasks));
+        }
+        
+        console.log('=== END DEBUG INFO ===');
+        
+        // Force reload if data doesn't match
+        this.forceProgressReload();
+    }
+
+    /**
+     * Force reload progress from localStorage
+     */
+    forceProgressReload() {
+        console.log('🔄 Force reloading progress from localStorage...');
+        
+        // Reload completed tasks
+        this.checklistManager.completedTasks = this.checklistManager.loadCompletedTasks();
+        
+        // Reload player data
+        this.gamificationSystem.playerData = this.gamificationSystem.loadPlayerData();
+        
+        // Re-render everything
+        this.renderUI();
+        this.updateProgressDisplays();
+        
+        console.log('✅ Progress force reloaded');
     }
 
     /**
@@ -73,6 +131,23 @@ class CurriculumApp {
                 this.hideAchievementNotification();
             }
         });
+
+        // Tutorial button clicks
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.tutorial-btn')) {
+                e.preventDefault();
+                const tutorialName = e.target.dataset.tutorial;
+                this.openTutorial(tutorialName);
+            }
+        });
+
+        // Debug panel toggle (Ctrl + D)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'd') {
+                e.preventDefault();
+                this.toggleDebugPanel();
+            }
+        });
     }
 
     /**
@@ -91,6 +166,20 @@ class CurriculumApp {
         this.gamificationSystem.onAchievementUnlock((achievement) => {
             this.gamificationSystem.showAchievementUnlock(achievement);
             this.updateAchievementsDisplay();
+        });
+    }
+
+    /**
+     * Set up quiz system callbacks
+     */
+    setupQuizCallbacks() {
+        this.quizSystem.onQuizComplete((quiz, results) => {
+            if (results.passed) {
+                // Award XP for quiz completion
+                this.gamificationSystem.awardXP(quiz.xpReward, `Quiz: ${quiz.title}`);
+                this.updateXPDisplay();
+                this.updateLevelDisplay();
+            }
         });
     }
 
@@ -179,9 +268,61 @@ class CurriculumApp {
                     <div class="tasks-list">
                         ${day.tasks.map(task => this.createTaskHTML(task)).join('')}
                     </div>
+                    ${this.createDayQuizHTML(week.id, day.day)}
                 </div>
             `;
         }).join('');
+    }
+
+    /**
+     * Create HTML for day quiz button
+     */
+    createDayQuizHTML(weekId, dayName) {
+        // Convert day name to day ID (Monday = 1, Tuesday = 2, etc.)
+        const dayId = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].indexOf(dayName) + 1;
+        
+        if (!this.quizSystem.isQuizAvailable(weekId, dayId)) {
+            return ''; // No quiz available for this day
+        }
+
+        // Check if all tasks for this day are completed
+        const dayTasks = this.checklistManager.getDayTasks(weekId, dayName);
+        const isDayCompleted = dayTasks.length > 0 && dayTasks.every(task => 
+            this.checklistManager.isTaskCompleted(task.id)
+        );
+        const quizStatus = this.quizSystem.getQuizStatus(weekId, dayId);
+        
+        let buttonClass = 'day-quiz-btn';
+        let buttonText = '🧠 Take Quiz';
+        let disabled = false;
+        
+        if (!isDayCompleted) {
+            buttonClass += ' disabled';
+            buttonText = '🔒 Complete All Tasks First';
+            disabled = true;
+        } else if (quizStatus && quizStatus.passed) {
+            buttonClass += ' completed';
+            buttonText = `✅ Quiz Completed (${quizStatus.score}%)`;
+        } else if (quizStatus && !quizStatus.passed) {
+            buttonText = `🔄 Retake Quiz (${quizStatus.score}%)`;
+        }
+
+        return `
+            <div class="day-quiz-section">
+                <button class="${buttonClass}" 
+                        onclick="window.app.startDayQuiz(${weekId}, ${dayId})"
+                        ${disabled ? 'disabled' : ''}>
+                    ${buttonText}
+                </button>
+            </div>
+        `;
+    }
+
+    /**
+     * Start quiz for a specific day
+     */
+    startDayQuiz(weekId, dayId) {
+        this.quizSystem.startQuiz(weekId, dayId);
     }
 
     /**
@@ -189,6 +330,9 @@ class CurriculumApp {
      */
     createTaskHTML(task) {
         const isCompleted = this.checklistManager.isTaskCompleted(task.id);
+        const tutorialButton = task.tutorial ? 
+            `<button class="tutorial-btn" data-tutorial="${task.tutorial}">📖 Tutorial</button>` : '';
+        const cmsIcon = task.type === 'setup' && task.text.toLowerCase().includes('sanity') ? '🗄️' : '';
         
         return `
             <div class="task-item ${isCompleted ? 'completed' : ''}" data-task-id="${task.id}">
@@ -196,10 +340,11 @@ class CurriculumApp {
                     ${isCompleted ? '✓' : ''}
                 </div>
                 <div class="task-content">
-                    <div class="task-text">${task.text}</div>
+                    <div class="task-text">${cmsIcon}${task.text}</div>
                     <div class="task-meta">
                         <span class="task-type">${task.type}</span>
                         <span class="task-xp">+${task.xp} XP</span>
+                        ${tutorialButton}
                     </div>
                 </div>
             </div>
@@ -438,6 +583,255 @@ class CurriculumApp {
     }
 
     /**
+     * Open tutorial in modal
+     */
+    openTutorial(tutorialName) {
+        this.showModal('Tutorial', `Loading ${tutorialName} tutorial...`, 'loading');
+        
+        // Load tutorial content
+        fetch(`./tutorials/${tutorialName}.md`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Tutorial not found');
+                }
+                return response.text();
+            })
+            .then(content => {
+                this.showModal('Sanity.io CLI Tutorial', content, 'tutorial');
+            })
+            .catch(error => {
+                console.error('Error loading tutorial:', error);
+                this.showModal('Error', 'Failed to load tutorial content. Please check console for details.', 'error');
+            });
+    }
+
+    /**
+     * Show modal with content
+     */
+    showModal(title, content, type = 'default') {
+        // Remove existing modal if any
+        const existingModal = document.getElementById('tutorialModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const modal = document.createElement('div');
+        modal.id = 'tutorialModal';
+        modal.className = 'tutorial-modal';
+        
+        const formattedContent = type === 'tutorial' ? this.formatMarkdown(content) : content;
+        
+        modal.innerHTML = `
+            <div class="tutorial-modal-content">
+                <div class="tutorial-modal-header">
+                    <h2>${title}</h2>
+                    <button class="tutorial-modal-close">&times;</button>
+                </div>
+                <div class="tutorial-modal-body ${type}">
+                    ${formattedContent}
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        
+        // Close button event
+        modal.querySelector('.tutorial-modal-close').addEventListener('click', () => {
+            modal.remove();
+        });
+        
+        // Click outside to close
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
+        });
+    }
+
+    /**
+     * Format markdown content for display
+     */
+    formatMarkdown(markdown) {
+        // Simple markdown to HTML conversion
+        let html = markdown
+            // Headers
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            // Code blocks
+            .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code class="language-$1">$2</code></pre>')
+            // Inline code
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            // Bold
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Italic
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            // Links
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+            // Paragraphs
+            .replace(/\n\n/g, '</p><p>')
+            // Line breaks
+            .replace(/\n/g, '<br>');
+        
+        return `<div class="markdown-content"><p>${html}</p></div>`;
+    }
+
+    /**
+     * Toggle debug panel for progress tracking
+     */
+    toggleDebugPanel() {
+        let debugPanel = document.getElementById('debugPanel');
+        
+        if (debugPanel) {
+            debugPanel.remove();
+            return;
+        }
+
+        debugPanel = document.createElement('div');
+        debugPanel.id = 'debugPanel';
+        debugPanel.innerHTML = `
+            <div class="debug-panel">
+                <div class="debug-header">
+                    <h3>Progress Debug Panel</h3>
+                    <button class="debug-close" onclick="this.closest('#debugPanel').remove()">&times;</button>
+                </div>
+                <div class="debug-content">
+                    <div class="debug-section">
+                        <h4>Storage Status</h4>
+                        <div id="debugStorageStatus">Loading...</div>
+                    </div>
+                    <div class="debug-section">
+                        <h4>Current Progress</h4>
+                        <div id="debugProgressInfo">Loading...</div>
+                    </div>
+                    <div class="debug-section">
+                        <h4>Actions</h4>
+                        <button class="debug-btn" onclick="window.app.manualSave()">Force Save</button>
+                        <button class="debug-btn" onclick="window.app.refreshProgress()">Refresh Display</button>
+                        <button class="debug-btn" onclick="window.app.exportProgressData()">Export Data</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        debugPanel.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 9999;
+            font-family: monospace;
+        `;
+
+        document.body.appendChild(debugPanel);
+        this.updateDebugPanel();
+    }
+
+    /**
+     * Update debug panel with current information
+     */
+    updateDebugPanel() {
+        const debugPanel = document.getElementById('debugPanel');
+        if (!debugPanel) return;
+
+        // Storage status
+        const storageStatus = document.getElementById('debugStorageStatus');
+        if (storageStatus) {
+            const completedTasks = localStorage.getItem('completedTasks');
+            const playerData = localStorage.getItem('playerData');
+            storageStatus.innerHTML = `
+                <div>✓ localStorage Available: ${typeof Storage !== 'undefined'}</div>
+                <div>✓ Completed Tasks: ${completedTasks ? JSON.parse(completedTasks).length : 0}</div>
+                <div>✓ Player Data: ${playerData ? 'Saved' : 'Missing'}</div>
+            `;
+        }
+
+        // Progress info
+        const progressInfo = document.getElementById('debugProgressInfo');
+        if (progressInfo) {
+            const stats = this.checklistManager.getCompletionStats();
+            const playerStats = this.gamificationSystem.getPlayerStats();
+            const achievements = this.gamificationSystem.getAchievements();
+            const unlockedCount = achievements.filter(a => a.unlocked).length;
+
+            progressInfo.innerHTML = `
+                <div>Tasks: ${stats.completed}/${stats.total} (${stats.percentage}%)</div>
+                <div>XP: ${playerStats.xp} | Level: ${playerStats.level}</div>
+                <div>Achievements: ${unlockedCount}/${achievements.length}</div>
+                <div>Last Save: ${new Date().toLocaleTimeString()}</div>
+            `;
+        }
+    }
+
+    /**
+     * Manually save all progress data
+     */
+    manualSave() {
+        this.checklistManager.saveCompletedTasks();
+        this.gamificationSystem.savePlayerData();
+        this.updateDebugPanel();
+        console.log('Manual save completed');
+        
+        // Show confirmation
+        const notification = document.createElement('div');
+        notification.textContent = '✓ Progress saved manually!';
+        notification.style.cssText = `
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            z-index: 10000;
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => notification.remove(), 2000);
+    }
+
+    /**
+     * Refresh all progress displays
+     */
+    refreshProgress() {
+        this.renderUI();
+        this.updateProgressDisplays();
+        this.updateDebugPanel();
+        console.log('Progress displays refreshed');
+    }
+
+    /**
+     * Export current progress data
+     */
+    exportProgressData() {
+        const progressData = this.checklistManager.exportProgress();
+        const playerData = this.gamificationSystem.getPlayerStats();
+        const achievements = this.gamificationSystem.getAchievements();
+        
+        const exportData = {
+            ...progressData,
+            playerStats: playerData,
+            achievements: achievements.filter(a => a.unlocked),
+            exportedAt: new Date().toISOString()
+        };
+
+        // Create downloadable file
+        const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `curriculum-progress-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        
+        console.log('Progress data exported');
+    }
+
+    /**
      * Show error message
      */
     showError(message) {
@@ -481,6 +875,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize the app
     window.app = new CurriculumApp();
     window.app.init();
+    
+    // Make quiz system globally available
+    window.quizSystem = window.app.quizSystem;
 });
 
 // Export for global access
