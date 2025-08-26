@@ -30,10 +30,8 @@
   [headers.values]
     Cache-Control = "max-age=0, must-revalidate"
 
-# Redirect rules for SPA behavior (though not needed for this static site)
+# Redirect rules for SPA behavior (fallback to index.html for any missing routes)
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
-  force = false
