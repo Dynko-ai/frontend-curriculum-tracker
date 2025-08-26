@@ -22,6 +22,12 @@ class Auth0System {
      */
     async init() {
         try {
+            // Wait for Auth0 SDK to load
+            if (typeof createAuth0Client === 'undefined') {
+                setTimeout(() => this.init(), 100);
+                return;
+            }
+
             // Create Auth0 client
             this.auth0Client = await createAuth0Client({
                 domain: this.config.domain,
