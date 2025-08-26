@@ -9,6 +9,7 @@
     <!-- CSS Files -->
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/gamification.css">
+    <link rel="stylesheet" href="styles/quiz.css">
     <link rel="stylesheet" href="styles/responsive.css">
     
     <!-- Favicon -->
@@ -78,13 +79,17 @@
         <div class="container">
             <p>&copy; 2025 Frontend Developer Curriculum Tracker</p>
             <button class="reset-progress-btn" id="resetProgressBtn">Reset Progress</button>
+            <button class="reset-progress-btn" id="reloadProgressBtn" onclick="if(window.app) window.app.forceProgressReload()" style="background: #007bff;">Reload Progress</button>
+            <button class="reset-progress-btn" id="debugStorageBtn" onclick="window.open('./debug-storage.html', '_blank')" style="background: #17a2b8;">Debug Storage</button>
         </div>
     </footer>
 
     <!-- JavaScript Files -->
     <script src="scripts/curriculum-data.js"></script>
+    <script src="data/quiz-data.js"></script>
     <script src="scripts/checklist.js"></script>
     <script src="scripts/gamification.js"></script>
+    <script src="scripts/quiz-system.js"></script>
     <script src="scripts/app.js"></script>
 </body>
 </html>

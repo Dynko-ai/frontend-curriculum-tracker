@@ -39,6 +39,12 @@
   /* Transitions */
   --transition: all 0.2s ease-in-out;
   --transition-slow: all 0.3s ease-in-out;
+  
+  /* CMS & Tutorial Colors */
+  --cms-color: #8b5cf6;
+  --cms-color-light: #a78bfa;
+  --tutorial-bg: #fef3c7;
+  --tutorial-border: #f59e0b;
 }
 
 /* Reset and Base Styles */
@@ -304,28 +310,48 @@ body {
   border-left: 3px solid var(--success-color);
 }
 
+.task-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
 .task-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  width: 0;
+  height: 0;
+}
+
+.checkmark {
   width: 20px;
   height: 20px;
   border: 2px solid var(--border);
   border-radius: 4px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: var(--transition);
   flex-shrink: 0;
   margin-top: 2px;
+  user-select: none;
 }
 
-.task-checkbox:hover {
+.task-checkbox-wrapper:hover .checkmark {
   border-color: var(--primary-color);
 }
 
-.task-checkbox.checked {
+.checkmark.checked {
   background: var(--success-color);
   border-color: var(--success-color);
   color: white;
+}
+
+.task-checkbox:focus + .checkmark {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }
 
 .task-content {
@@ -418,3 +444,375 @@ body {
 .mt-sm { margin-top: var(--space-sm); }
 .mt-md { margin-top: var(--space-md); }
 .mt-lg { margin-top: var(--space-lg); }
+
+/* Tutorial Button Styles */
+.tutorial-btn {
+  background: var(--tutorial-bg);
+  color: var(--warning-color);
+  border: 1px solid var(--tutorial-border);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: calc(var(--border-radius) / 2);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-left: var(--space-sm);
+}
+
+.tutorial-btn:hover {
+  background: var(--warning-color);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+
+/* CMS Task Highlighting */
+.task-item:has(.task-text:contains("Sanity")),
+.task-item[data-task-id*="sanity"] {
+  border-left: 3px solid var(--cms-color);
+}
+
+.task-type:contains("setup") + .task-xp:has(~ .tutorial-btn) {
+  color: var(--cms-color);
+  font-weight: 600;
+}
+
+/* Tutorial Modal Styles */
+.tutorial-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: var(--space-lg);
+}
+
+.tutorial-modal-content {
+  background: var(--background);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+  max-width: 900px;
+  max-height: 90vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.tutorial-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.tutorial-modal-header h2 {
+  color: var(--text-primary);
+  font-size: var(--font-size-xl);
+  margin: 0;
+}
+
+.tutorial-modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: var(--space-xs);
+  line-height: 1;
+  transition: var(--transition);
+}
+
+.tutorial-modal-close:hover {
+  color: var(--danger-color);
+  transform: scale(1.1);
+}
+
+.tutorial-modal-body {
+  padding: var(--space-lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.tutorial-modal-body.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  min-height: 200px;
+}
+
+.tutorial-modal-body.error {
+  color: var(--danger-color);
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Markdown Content Styles */
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3 {
+  color: var(--text-primary);
+  margin: var(--space-lg) 0 var(--space-md) 0;
+  line-height: 1.2;
+}
+
+.markdown-content h1 {
+  font-size: var(--font-size-3xl);
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: var(--space-sm);
+}
+
+.markdown-content h2 {
+  font-size: var(--font-size-2xl);
+  color: var(--primary-color);
+}
+
+.markdown-content h3 {
+  font-size: var(--font-size-xl);
+  color: var(--cms-color);
+}
+
+.markdown-content p {
+  margin-bottom: var(--space-md);
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+.markdown-content code {
+  background: var(--surface);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: calc(var(--border-radius) / 2);
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  color: var(--cms-color);
+  border: 1px solid var(--border);
+}
+
+.markdown-content pre {
+  background: var(--text-primary);
+  color: #f8f8f2;
+  padding: var(--space-lg);
+  border-radius: var(--border-radius);
+  overflow-x: auto;
+  margin: var(--space-md) 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+.markdown-content pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  color: inherit;
+  font-size: var(--font-size-sm);
+  line-height: 1.4;
+}
+
+.markdown-content a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: var(--transition);
+}
+
+.markdown-content a:hover {
+  border-bottom-color: var(--primary-color);
+  color: var(--primary-dark);
+}
+
+.markdown-content strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.markdown-content em {
+  color: var(--cms-color);
+  font-style: italic;
+}
+
+/* Week Theme Enhancement for CMS */
+.day-section:has(.tasks-list .task-text:contains("Sanity")) .day-header {
+  background: linear-gradient(135deg, var(--cms-color-light), var(--cms-color));
+  color: white;
+}
+
+.day-section:has(.tasks-list .task-text:contains("CMS")) .day-title,
+.day-section:has(.tasks-list .task-text:contains("GROQ")) .day-title {
+  position: relative;
+}
+
+.day-section:has(.tasks-list .task-text:contains("CMS")) .day-title::before,
+.day-section:has(.tasks-list .task-text:contains("GROQ")) .day-title::before {
+  content: "🗄️";
+  margin-right: var(--space-xs);
+}
+
+/* Debug Panel Styles */
+.debug-panel {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: var(--font-size-sm);
+}
+
+.debug-header {
+  background: var(--primary-color);
+  color: white;
+  padding: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 6px 6px 0 0;
+}
+
+.debug-header h3 {
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.debug-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: var(--font-size-xl);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.debug-content {
+  padding: var(--space-md);
+}
+
+.debug-section {
+  margin-bottom: var(--space-lg);
+}
+
+.debug-section h4 {
+  color: var(--primary-color);
+  margin: 0 0 var(--space-sm) 0;
+  font-size: var(--font-size-base);
+}
+
+.debug-section > div {
+  background: var(--surface);
+  padding: var(--space-sm);
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--success-color);
+}
+
+.debug-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: calc(var(--border-radius) / 2);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  margin-right: var(--space-xs);
+  margin-bottom: var(--space-xs);
+  transition: var(--transition);
+}
+
+.debug-btn:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Enhanced Task Completion Feedback */
+.task-item.completing {
+  animation: taskComplete 0.6s ease-in-out;
+  border-left: 4px solid var(--success-color);
+}
+
+.checkmark.checking {
+  animation: checkboxPulse 0.3s ease-in-out;
+  background: var(--success-color);
+  color: white;
+}
+
+@keyframes taskComplete {
+  0% { transform: scale(1); }
+  50% { 
+    transform: scale(1.02);
+    background: linear-gradient(135deg, var(--success-color), var(--primary-color));
+    color: white;
+  }
+  100% { transform: scale(1); }
+}
+
+@keyframes checkboxPulse {
+  0% { transform: scale(1); }
+  50% { 
+    transform: scale(1.1);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+  }
+  100% { transform: scale(1); }
+}
+
+/* Progress Bar Enhancements */
+.progress-bar-fill {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-fill.updating {
+  animation: progressPulse 1s ease-in-out;
+}
+
+@keyframes progressPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Achievement Unlock Animation */
+.achievement-badge.unlocking {
+  animation: achievementUnlock 1s ease-in-out;
+}
+
+@keyframes achievementUnlock {
+  0% { 
+    transform: scale(0.8) rotate(-5deg);
+    opacity: 0;
+  }
+  50% { 
+    transform: scale(1.1) rotate(2deg);
+    opacity: 1;
+  }
+  100% { 
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .tutorial-modal {
+    padding: var(--space-sm);
+  }
+  
+  .tutorial-modal-content {
+    max-height: 95vh;
+  }
+  
+  .tutorial-modal-header,
+  .tutorial-modal-body {
+    padding: var(--space-md);
+  }
+  
+  .markdown-content pre {
+    font-size: var(--font-size-xs);
+    padding: var(--space-md);
+  }
+
+  /* Debug Panel Responsive */
+  .debug-panel {
+    font-size: var(--font-size-xs);
+  }
+}

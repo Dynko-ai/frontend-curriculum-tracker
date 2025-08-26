@@ -31,12 +31,6 @@ window.CURRICULUM_DATA = {
               "text": "Create a basic HTML5 document structure",
               "type": "code",
               "xp": 15
-            },
-            {
-              "id": "w1d1t4",
-              "text": "Configure GitHub Pages for project deployment",
-              "type": "setup",
-              "xp": 20
             }
           ]
         },
@@ -654,7 +648,7 @@ window.CURRICULUM_DATA = {
       "id": 6,
       "title": "State Management & Advanced React",
       "description": "Interior Phase - Making everything work together beautifully",
-      "milestone": "Build a complex React app with global state management",
+      "milestone": "Build a React app with Sanity.io CMS integration",
       "days": [
         {
           "day": "Monday",
@@ -706,23 +700,24 @@ window.CURRICULUM_DATA = {
         },
         {
           "day": "Wednesday",
-          "theme": "Custom Hooks",
+          "theme": "Headless CMS & Sanity.io",
           "tasks": [
             {
               "id": "w6d3t1",
-              "text": "Learn to create custom React hooks",
-              "type": "study",
-              "xp": 25
+              "text": "Install Sanity CLI and create your first CMS project",
+              "type": "setup",
+              "xp": 25,
+              "tutorial": "sanity-cli-tutorial"
             },
             {
               "id": "w6d3t2",
-              "text": "Build useLocalStorage and useFetch hooks",
+              "text": "Design content schemas for a blog (post, author, category)",
               "type": "project",
               "xp": 35
             },
             {
               "id": "w6d3t3",
-              "text": "Create reusable hooks for common patterns",
+              "text": "Deploy Sanity Studio and add sample content",
               "type": "project",
               "xp": 30
             }
@@ -730,23 +725,23 @@ window.CURRICULUM_DATA = {
         },
         {
           "day": "Thursday",
-          "theme": "React Router",
+          "theme": "GROQ Queries & Data Fetching",
           "tasks": [
             {
               "id": "w6d4t1",
-              "text": "Set up React Router for navigation",
-              "type": "setup",
+              "text": "Learn GROQ query language fundamentals",
+              "type": "study",
               "xp": 20
             },
             {
               "id": "w6d4t2",
-              "text": "Create multiple routes and navigation components",
+              "text": "Connect React app to Sanity with @sanity/client",
               "type": "project",
               "xp": 30
             },
             {
               "id": "w6d4t3",
-              "text": "Implement protected routes and route parameters",
+              "text": "Build dynamic blog listing with real-time data",
               "type": "feature",
               "xp": 35
             }
@@ -754,23 +749,23 @@ window.CURRICULUM_DATA = {
         },
         {
           "day": "Friday",
-          "theme": "Advanced Patterns",
+          "theme": "Content Management Integration",
           "tasks": [
             {
               "id": "w6d5t1",
-              "text": "Learn render props and higher-order components",
+              "text": "Create custom Sanity schemas for portfolio content",
               "type": "study",
               "xp": 30
             },
             {
               "id": "w6d5t2",
-              "text": "Implement compound components pattern",
+              "text": "Implement image handling and optimization with Sanity",
               "type": "project",
               "xp": 35
             },
             {
               "id": "w6d5t3",
-              "text": "Build a dashboard with complex state management",
+              "text": "Build a complete CMS-driven portfolio website",
               "type": "project",
               "xp": 45
             }
@@ -938,23 +933,23 @@ window.CURRICULUM_DATA = {
         },
         {
           "day": "Tuesday",
-          "theme": "Build Tools & Bundlers",
+          "theme": "Sanity Studio Customization",
           "tasks": [
             {
               "id": "w8d2t1",
-              "text": "Learn Webpack configuration and optimization",
+              "text": "Customize Sanity Studio interface and branding",
               "type": "study",
               "xp": 30
             },
             {
               "id": "w8d2t2",
-              "text": "Set up Vite for faster development builds",
+              "text": "Create custom field components and validation",
               "type": "setup",
               "xp": 25
             },
             {
               "id": "w8d2t3",
-              "text": "Configure environment variables and build scripts",
+              "text": "Configure preview URLs and content workflows",
               "type": "configuration",
               "xp": 25
             }
@@ -962,23 +957,23 @@ window.CURRICULUM_DATA = {
         },
         {
           "day": "Wednesday",
-          "theme": "Deployment Platforms",
+          "theme": "Full-Stack CMS Deployment",
           "tasks": [
             {
               "id": "w8d3t1",
-              "text": "Deploy React app to Netlify with CI/CD",
+              "text": "Deploy Sanity Studio to production hosting",
               "type": "deployment",
               "xp": 30
             },
             {
               "id": "w8d3t2",
-              "text": "Set up Vercel deployment with custom domain",
+              "text": "Deploy React frontend with Sanity integration to Vercel",
               "type": "deployment",
               "xp": 30
             },
             {
               "id": "w8d3t3",
-              "text": "Configure environment variables for production",
+              "text": "Configure webhooks for real-time content updates",
               "type": "configuration",
               "xp": 20
             }

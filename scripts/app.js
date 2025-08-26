@@ -36,53 +36,19 @@ class CurriculumApp {
             // Update progress displays
             this.updateProgressDisplays();
             
-            // Debug: Log current progress state
-            this.debugProgressState();
             
             this.isInitialized = true;
-            console.log('Curriculum app initialized successfully');
         } catch (error) {
             console.error('Error initializing app:', error);
             this.showError('Failed to load curriculum data. Please refresh the page.');
         }
     }
 
-    /**
-     * Debug progress state for troubleshooting
-     */
-    debugProgressState() {
-        const completedTasks = this.checklistManager.completedTasks;
-        const playerStats = this.gamificationSystem.getPlayerStats();
-        const achievementStats = this.gamificationSystem.getAchievements();
-        
-        console.log('=== PROGRESS DEBUG INFO ===');
-        console.log('Completed Tasks:', completedTasks);
-        console.log('Total Completed:', completedTasks.length);
-        console.log('Player Stats:', playerStats);
-        console.log('Unlocked Achievements:', achievementStats.filter(a => a.unlocked));
-        console.log('LocalStorage - completedTasks:', localStorage.getItem('completedTasks'));
-        console.log('LocalStorage - playerData:', localStorage.getItem('playerData'));
-        
-        // Check if data is loading properly
-        const rawCompleted = localStorage.getItem('completedTasks');
-        if (rawCompleted) {
-            const parsed = JSON.parse(rawCompleted);
-            console.log('Raw localStorage completed tasks:', parsed);
-            console.log('Manager loaded tasks:', this.checklistManager.completedTasks);
-            console.log('Tasks match:', JSON.stringify(parsed) === JSON.stringify(this.checklistManager.completedTasks));
-        }
-        
-        console.log('=== END DEBUG INFO ===');
-        
-        // Force reload if data doesn't match
-        this.forceProgressReload();
-    }
 
     /**
      * Force reload progress from localStorage
      */
     forceProgressReload() {
-        console.log('🔄 Force reloading progress from localStorage...');
         
         // Reload completed tasks
         this.checklistManager.completedTasks = this.checklistManager.loadCompletedTasks();
@@ -94,7 +60,6 @@ class CurriculumApp {
         this.renderUI();
         this.updateProgressDisplays();
         
-        console.log('✅ Progress force reloaded');
     }
 
     /**
@@ -336,9 +301,12 @@ class CurriculumApp {
         
         return `
             <div class="task-item ${isCompleted ? 'completed' : ''}" data-task-id="${task.id}">
-                <div class="task-checkbox ${isCompleted ? 'checked' : ''}" data-task-id="${task.id}">
-                    ${isCompleted ? '✓' : ''}
-                </div>
+                <label class="task-checkbox-wrapper">
+                    <input type="checkbox" class="task-checkbox" data-task-id="${task.id}" ${isCompleted ? 'checked' : ''} aria-label="Mark task as ${isCompleted ? 'incomplete' : 'complete'}">
+                    <span class="checkmark ${isCompleted ? 'checked' : ''}">
+                        ${isCompleted ? '✓' : ''}
+                    </span>
+                </label>
                 <div class="task-content">
                     <div class="task-text">${cmsIcon}${task.text}</div>
                     <div class="task-meta">
@@ -419,11 +387,15 @@ class CurriculumApp {
                     setTimeout(() => element.classList.remove('completing'), 600);
                 }
             } else if (element.classList.contains('task-checkbox')) {
-                element.classList.toggle('checked', isCompleted);
-                element.textContent = isCompleted ? '✓' : '';
-                if (isCompleted) {
-                    element.classList.add('checking');
-                    setTimeout(() => element.classList.remove('checking'), 300);
+                element.checked = isCompleted;
+                const checkmark = element.nextElementSibling;
+                if (checkmark) {
+                    checkmark.classList.toggle('checked', isCompleted);
+                    checkmark.textContent = isCompleted ? '✓' : '';
+                    if (isCompleted) {
+                        checkmark.classList.add('checking');
+                        setTimeout(() => checkmark.classList.remove('checking'), 300);
+                    }
                 }
             }
         });
@@ -774,7 +746,6 @@ class CurriculumApp {
         this.checklistManager.saveCompletedTasks();
         this.gamificationSystem.savePlayerData();
         this.updateDebugPanel();
-        console.log('Manual save completed');
         
         // Show confirmation
         const notification = document.createElement('div');
@@ -801,7 +772,6 @@ class CurriculumApp {
         this.renderUI();
         this.updateProgressDisplays();
         this.updateDebugPanel();
-        console.log('Progress displays refreshed');
     }
 
     /**
@@ -828,7 +798,6 @@ class CurriculumApp {
         a.click();
         URL.revokeObjectURL(url);
         
-        console.log('Progress data exported');
     }
 
     /**
@@ -862,10 +831,9 @@ class CurriculumApp {
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Set up task checkbox event delegation
-    document.addEventListener('click', (e) => {
-        if (e.target.matches('.task-checkbox, .task-checkbox *')) {
-            e.preventDefault();
-            const taskId = e.target.closest('.task-checkbox').dataset.taskId;
+    document.addEventListener('change', (e) => {
+        if (e.target.matches('.task-checkbox')) {
+            const taskId = e.target.dataset.taskId;
             if (taskId && window.app) {
                 window.app.checklistManager.toggleTask(taskId);
             }
