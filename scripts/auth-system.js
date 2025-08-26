@@ -52,6 +52,17 @@ class AuthSystem {
                 this.handleLogin(user);
             }
         });
+
+        // Handle email confirmation redirects
+        netlifyIdentity.on('error', (err) => {
+            console.error('Netlify Identity Error:', err);
+        });
+
+        // Close modal after email confirmation
+        if (window.location.hash.includes('#confirmation_token=') || 
+            window.location.hash.includes('#recovery_token=')) {
+            netlifyIdentity.close();
+        }
     }
 
     /**
