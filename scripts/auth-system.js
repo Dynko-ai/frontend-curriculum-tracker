@@ -1,5 +1,5 @@
 /**
- * Authentication System for Elisa's Progress Journey
+ * Authentication System for Michael's Progress Journey
  * Handles user login/logout and content access control
  */
 
@@ -115,8 +115,8 @@ class AuthSystem {
         // Update UI for authenticated state
         this.updateAuthenticatedUI();
         
-        // Load Elisa's progress data
-        await this.loadElisaProgress();
+        // Load Michael's progress data
+        await this.loadMichaelProgress();
         
         // Trigger email notification
         this.triggerEmailNotification();
@@ -169,7 +169,7 @@ class AuthSystem {
         }
 
         // Update page title
-        document.title = "Elisa's Progress Journey - Frontend Developer Curriculum";
+        document.title = "Michael's Progress Journey - Frontend Developer Curriculum";
     }
 
     /**
@@ -202,12 +202,12 @@ class AuthSystem {
     }
 
     /**
-     * Load Elisa's progress data (placeholder for now)
+     * Load Michael's progress data (placeholder for now)
      */
-    async loadElisaProgress() {
+    async loadMichaelProgress() {
         try {
             // For now, we'll use placeholder data
-            // In Phase 2, this will load from elisa-progress.json
+            // In Phase 2, this will load from michael-progress.json
             const placeholderProgress = {
                 totalXP: 85,
                 currentLevel: 2,
@@ -217,16 +217,16 @@ class AuthSystem {
                 achievements: ['first-steps', 'quick-learner']
             };
 
-            // Update progress displays with Elisa's data
+            // Update progress displays with Michael's data
             this.updateProgressDisplays(placeholderProgress);
 
         } catch (error) {
-            console.error('Error loading Elisa\'s progress:', error);
+            console.error('Error loading Michael\'s progress:', error);
         }
     }
 
     /**
-     * Update progress displays with Elisa's data
+     * Update progress displays with Michael's data
      */
     updateProgressDisplays(progressData) {
         // Update XP and level

@@ -1,7 +1,7 @@
 # Authentication & Progress Sharing System Plan
 
 ## 🎯 Project Goals
-- Allow users to login and view Elisa's curriculum progress
+- Allow users to login and view Michael's curriculum progress
 - Send email notifications with daily accomplishment breakdowns
 - Maintain current static site architecture with minimal backend
 
@@ -15,7 +15,7 @@
 
 ## 📊 Data Structure
 
-### Your Master Progress File (`data/elisa-progress.json`)
+### Your Master Progress File (`data/michael-progress.json`)
 ```json
 {
   "lastUpdated": "2025-08-26T01:00:00Z",
@@ -89,18 +89,18 @@ class AuthGuard {
     this.user = netlifyIdentity.currentUser();
     
     if (this.user) {
-      this.showElisaProgress();
+      this.showMichaelProgress();
       this.triggerEmailNotification();
     } else {
       this.showLoginPrompt();
     }
   }
   
-  showElisaProgress() {
-    // Load and display Elisa's progress instead of user progress
-    fetch('/data/elisa-progress.json')
+  showMichaelProgress() {
+    // Load and display Michael's progress instead of user progress
+    fetch('/data/michael-progress.json')
       .then(response => response.json())
-      .then(data => this.renderElisaProgress(data));
+      .then(data => this.renderMichaelProgress(data));
   }
 }
 ```
@@ -117,14 +117,14 @@ exports.handler = async (event, context) => {
     return { statusCode: 401, body: 'Unauthorized' };
   }
   
-  // Load Elisa's progress
-  const progressData = require('../../data/elisa-progress.json');
+  // Load Michael's progress
+  const progressData = require('../../data/michael-progress.json');
   const latestDay = progressData.dailySummaries[0];
   
   // Send email via EmailJS or SendGrid
   const emailData = {
     to: user.email,
-    subject: `Elisa's Daily Progress - ${latestDay.date}`,
+    subject: `Michael's Daily Progress - ${latestDay.date}`,
     html: generateProgressEmail(latestDay)
   };
   
@@ -150,7 +150,7 @@ exports.handler = async (event, context) => {
 <!-- Add to index.html -->
 <div id="auth-modal" class="modal hidden">
   <div class="modal-content">
-    <h2>View Elisa's Progress</h2>
+    <h2>View Michael's Progress</h2>
     <p>Login to see daily accomplishments and receive email updates</p>
     <button id="login-btn">Login with Email</button>
     <button id="github-login-btn">Login with GitHub</button>
@@ -160,21 +160,21 @@ exports.handler = async (event, context) => {
 
 ### 2. Progress Display Modification
 ```javascript
-// Modify existing CurriculumApp to show Elisa's data when authenticated
+// Modify existing CurriculumApp to show Michael's data when authenticated
 class AuthenticatedView extends CurriculumApp {
   async loadProgress() {
-    // Load Elisa's static progress instead of localStorage
-    const response = await fetch('/data/elisa-progress.json');
-    const elisaData = await response.json();
+    // Load Michael's static progress instead of localStorage
+    const response = await fetch('/data/michael-progress.json');
+    const michaelData = await response.json();
     
-    // Populate UI with Elisa's accomplishments
-    this.renderStaticProgress(elisaData);
+    // Populate UI with Michael's accomplishments
+    this.renderStaticProgress(michaelData);
   }
   
   renderStaticProgress(data) {
-    // Update UI to show read-only view of Elisa's progress
+    // Update UI to show read-only view of Michael's progress
     // Disable task completion functionality
-    // Add "Elisa's Progress" header
+    // Add "Michael's Progress" header
   }
 }
 ```
@@ -188,7 +188,7 @@ class AuthenticatedView extends CurriculumApp {
 - [ ] Test authentication flow
 
 ### Phase 2: Static Progress Display (2-3 hours) 
-- [ ] Create `elisa-progress.json` with your current data
+- [ ] Create `michael-progress.json` with your current data
 - [ ] Modify UI to show static progress
 - [ ] Add "read-only" visual indicators
 - [ ] Style authenticated view differently
@@ -243,10 +243,10 @@ class AuthenticatedView extends CurriculumApp {
 
 ## 🎯 User Experience Flow
 
-1. **Visitor arrives** → See "Login to view Elisa's progress"
+1. **Visitor arrives** → See "Login to view Michael's progress"
 2. **User clicks login** → Netlify Identity modal opens
 3. **User authenticates** → Redirected to authenticated view
-4. **Page loads with Elisa's data** → Shows your actual progress
+4. **Page loads with Michael's data** → Shows your actual progress
 5. **Email triggered** → User receives daily summary email
 6. **Subsequent visits** → Auto-login, updated progress shown
 
