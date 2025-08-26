@@ -20,14 +20,26 @@
         <div class="container">
             <h1 class="logo">Frontend Developer Curriculum</h1>
             <div class="user-stats">
-                <div class="level-badge" id="levelBadge">
-                    <span class="level-text">Level 1</span>
-                </div>
-                <div class="xp-container">
-                    <div class="xp-bar">
-                        <div class="xp-fill" id="xpFill"></div>
+                <!-- Authentication Status -->
+                <div class="auth-section" id="authSection">
+                    <button class="auth-btn" id="loginBtn">🔒 View Elisa's Journey</button>
+                    <div class="user-info hidden" id="userInfo">
+                        <span class="user-email" id="userEmail"></span>
+                        <button class="auth-btn logout" id="logoutBtn">Logout</button>
                     </div>
-                    <span class="xp-text" id="xpText">0 / 100 XP</span>
+                </div>
+                
+                <!-- Progress Stats (shown when authenticated) -->
+                <div class="progress-stats hidden" id="progressStats">
+                    <div class="level-badge" id="levelBadge">
+                        <span class="level-text">Level 1</span>
+                    </div>
+                    <div class="xp-container">
+                        <div class="xp-bar">
+                            <div class="xp-fill" id="xpFill"></div>
+                        </div>
+                        <span class="xp-text" id="xpText">0 / 100 XP</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -35,7 +47,38 @@
 
     <main class="main">
         <div class="container">
-            <!-- Overall Progress -->
+            <!-- Authentication Gate -->
+            <section class="auth-gate" id="authGate">
+                <div class="auth-gate-content">
+                    <h2>🎯 Follow Elisa's Frontend Development Journey</h2>
+                    <p>Track my real progress through the Frontend UI/UX Developer curriculum. See what I've accomplished, earned XP, and unlocked achievements!</p>
+                    <div class="auth-features">
+                        <div class="feature">
+                            <span class="feature-icon">📈</span>
+                            <span>View real-time progress updates</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">🏆</span>
+                            <span>See achievements as they're unlocked</span>
+                        </div>
+                        <div class="feature">
+                            <span class="feature-icon">📧</span>
+                            <span>Get daily progress summaries via email</span>
+                        </div>
+                    </div>
+                    <button class="cta-login-btn" id="ctaLoginBtn">🚀 Start Following My Journey</button>
+                </div>
+            </section>
+            
+            <!-- Authenticated Content (hidden by default) -->
+            <div class="authenticated-content hidden" id="authenticatedContent">
+                <!-- Progress Header -->
+                <section class="progress-header">
+                    <h2>📊 Elisa's Progress Journey</h2>
+                    <p class="journey-subtitle">Following the Frontend UI/UX Developer Curriculum</p>
+                </section>
+                
+                <!-- Overall Progress -->
             <section class="progress-overview">
                 <h2>Overall Progress</h2>
                 <div class="progress-bar">
@@ -66,12 +109,13 @@
                 </div>
             </section>
 
-            <!-- Curriculum Weeks -->
-            <section class="curriculum-content">
-                <div class="weeks-container" id="weeksContainer">
-                    <!-- Week sections will be dynamically populated -->
-                </div>
-            </section>
+                <!-- Curriculum Weeks -->
+                <section class="curriculum-content">
+                    <div class="weeks-container" id="weeksContainer">
+                        <!-- Week sections will be dynamically populated -->
+                    </div>
+                </section>
+            </div> <!-- End authenticated-content -->
         </div>
     </main>
 
@@ -84,12 +128,16 @@
         </div>
     </footer>
 
+    <!-- Netlify Identity Widget -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
     <!-- JavaScript Files -->
     <script src="scripts/curriculum-data.js"></script>
     <script src="data/quiz-data.js"></script>
     <script src="scripts/checklist.js"></script>
     <script src="scripts/gamification.js"></script>
     <script src="scripts/quiz-system.js"></script>
+    <script src="scripts/auth-system.js"></script>
     <script src="scripts/app.js"></script>
 </body>
 </html>
