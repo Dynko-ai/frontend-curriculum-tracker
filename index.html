@@ -20,17 +20,8 @@
         <div class="container">
             <h1 class="logo">Frontend Developer Curriculum</h1>
             <div class="user-stats">
-                <!-- Authentication Status -->
-                <div class="auth-section" id="authSection">
-                    <button class="auth-btn" id="loginBtn">🔒 View Michael's Journey</button>
-                    <div class="user-info hidden" id="userInfo">
-                        <span class="user-email" id="userEmail"></span>
-                        <button class="auth-btn logout" id="logoutBtn">Logout</button>
-                    </div>
-                </div>
-                
-                <!-- Progress Stats (shown when authenticated) -->
-                <div class="progress-stats hidden" id="progressStats">
+                <!-- Progress Stats (always visible) -->
+                <div class="progress-stats" id="progressStats">
                     <div class="level-badge" id="levelBadge">
                         <span class="level-text">Level 1</span>
                     </div>
@@ -47,35 +38,16 @@
 
     <main class="main">
         <div class="container">
-            <!-- Authentication Gate -->
-            <section class="auth-gate" id="authGate">
-                <div class="auth-gate-content">
-                    <h2>🎯 Follow Michael's Frontend Development Journey</h2>
-                    <p>Track my real progress through the Frontend UI/UX Developer curriculum. See what I've accomplished, earned XP, and unlocked achievements!</p>
-                    <div class="auth-features">
-                        <div class="feature">
-                            <span class="feature-icon">📈</span>
-                            <span>View real-time progress updates</span>
-                        </div>
-                        <div class="feature">
-                            <span class="feature-icon">🏆</span>
-                            <span>See achievements as they're unlocked</span>
-                        </div>
-                        <div class="feature">
-                            <span class="feature-icon">📧</span>
-                            <span>Get daily progress summaries via email</span>
-                        </div>
-                    </div>
-                    <button class="cta-login-btn" id="ctaLoginBtn">🚀 Start Following My Journey</button>
-                </div>
-            </section>
-            
-            <!-- Authenticated Content (hidden by default) -->
-            <div class="authenticated-content hidden" id="authenticatedContent">
+            <!-- Public Progress View -->
+            <div class="public-progress-content" id="publicProgressContent">
                 <!-- Progress Header -->
                 <section class="progress-header">
                     <h2>📊 Michael's Progress Journey</h2>
-                    <p class="journey-subtitle">Following the Frontend UI/UX Developer Curriculum</p>
+                    <p class="journey-subtitle">Following the Frontend UI/UX Developer Curriculum - View Only</p>
+                    <div class="view-only-notice">
+                        <span class="notice-icon">👀</span>
+                        <span>You're viewing Michael's real progress - tasks cannot be modified</span>
+                    </div>
                 </section>
                 
                 <!-- Overall Progress -->
@@ -137,7 +109,7 @@
     <script src="scripts/checklist.js"></script>
     <script src="scripts/gamification.js"></script>
     <script src="scripts/quiz-system.js"></script>
-    <script src="scripts/auth0-system.js?v=4"></script>
+    <script src="scripts/public-progress.js"></script>
     <script src="scripts/app.js"></script>
 </body>
 </html>
