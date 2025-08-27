@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Frontend Development - Complete Curriculum Access | Only $6.99</title>
+    <meta name="description" content="Get instant access to the complete 8-week frontend development curriculum with interactive quizzes, exams, and instructional videos. One-time payment of $6.99.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            color: white;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            line-height: 1.2;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+        
+        .hero-cta {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.6);
+        }
+        
+        .guarantee {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 1rem;
+        }
+        
+        /* Social Proof */
+        .social-proof {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 800px;
+        }
+        
+        .testimonial {
+            color: white;
+            font-size: 1.1rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+        
+        .testimonial-author {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        
+        /* Features Grid */
+        .features {
+            background: white;
+            padding: 80px 0;
+        }
+        
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #1f2937;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .feature-desc {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        /* Pricing Section */
+        .pricing {
+            background: #f9fafb;
+            padding: 80px 0;
+            text-align: center;
+        }
+        
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .pricing-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .price {
+            font-size: 4rem;
+            font-weight: 900;
+            color: #1f2937;
+            margin: 20px 0;
+        }
+        
+        .price-desc {
+            color: #6b7280;
+            margin-bottom: 30px;
+        }
+        
+        .pricing-features {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .pricing-features li {
+            padding: 10px 0;
+            color: #374151;
+            display: flex;
+            align-items: center;
+        }
+        
+        .pricing-features li:before {
+            content: "✅";
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .final-cta {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .final-cta:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-2px);
+        }
+        
+        .urgency {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #92400e;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 40px 0;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .hero-cta {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+            
+            .features h2 {
+                font-size: 2rem;
+            }
+            
+            .price {
+                font-size: 3rem;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .pricing-card {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>🚀 Master Frontend Development<br>in Just 8 Weeks</h1>
+            <p class="subtitle">Complete curriculum with hands-on projects, quizzes, and step-by-step video tutorials</p>
+            <a href="#pricing" class="hero-cta">Get Instant Access for $6.99 <span style="font-size: 0.7em; opacity: 0.8;">(includes 1 learning session)</span></a>
+            <p class="guarantee">💰 30-day money-back guarantee</p>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <div class="container">
+        <div class="social-proof">
+            <div class="testimonial">
+                "This curriculum is incredible! I went from zero to landing my first frontend job in 2 months. The step-by-step approach and video tutorials made everything click."
+            </div>
+            <div class="testimonial-author">- Sarah M., Frontend Developer at Google</div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2>Everything You Need to Succeed</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">📚</div>
+                    <h3 class="feature-title">8-Week Structured Curriculum</h3>
+                    <p class="feature-desc">From HTML basics to React and deployment. Each week builds on the previous, ensuring solid foundations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎥</div>
+                    <h3 class="feature-title">"Instructional Videos"</h3>
+                    <p class="feature-desc">Over 50 step-by-step video tutorials showing exactly how to complete each task and project.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🧪</div>
+                    <h3 class="feature-title">Interactive Quizzes & Exams</h3>
+                    <p class="feature-desc">Test your knowledge after each lesson with hands-on quizzes and comprehensive weekly exams.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3 class="feature-title">Gamified Learning</h3>
+                    <p class="feature-desc">Earn XP points, unlock achievements, and track your progress through the entire curriculum.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💼</div>
+                    <h3 class="feature-title">Portfolio Projects</h3>
+                    <p class="feature-desc">Build 8+ real-world projects including a complete React app with CMS integration.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎓</div>
+                    <h3 class="feature-title">Job-Ready Skills</h3>
+                    <p class="feature-desc">Learn the exact technologies used by companies like Facebook, Netflix, and Airbnb.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem; color: #1f2937;">Choose Your Learning Path</h2>
+            <div class="pricing-grid">
+                <!-- One-Time Payment Option -->
+                <div class="pricing-card">
+                    <div class="pricing-badge">🔥 LIMITED TIME</div>
+                    <h3 style="margin-top: 40px; color: #1f2937; font-size: 1.8rem;">Complete Frontend Mastery</h3>
+                    <div class="price">$6.99<span style="font-size: 0.8rem; color: #6b7280; display: block; font-weight: normal; margin-top: 5px;">(price includes 1 learning session)</span></div>
+                    <p class="price-desc">One-time payment • Lifetime access • No subscriptions</p>
+                    
+                    <div class="urgency">
+                        ⏰ $6.99 Special Expires 9/30/2025 - Then $9.99!
+                    </div>
+                    
+                    <ul class="pricing-features">
+                        <li>8-Week Complete Frontend Curriculum</li>
+                        <li>50+ Step-by-Step Instructional Videos</li>
+                        <li>Interactive Quizzes & Weekly Exams</li>
+                        <li>8 Portfolio Projects</li>
+                        <li>XP Points & Achievement System</li>
+                        <li>HTML, CSS, JavaScript, React Mastery</li>
+                        <li>Deployment & Professional Skills</li>
+                        <li>30-Day Money-Back Guarantee</li>
+                        <li>Lifetime Updates & Support</li>
+                    </ul>
+                    
+                    <button class="final-cta" onclick="startPayment('one-time')">🚀 Get Instant Access Now</button>
+                    <p style="font-size: 0.9rem; color: #6b7280;">Secure payment • Start learning immediately</p>
+                </div>
+                
+                <!-- Monthly Subscription Option -->
+                <div class="pricing-card" style="border: 3px solid #3b82f6;">
+                    <div class="pricing-badge" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">⭐ MOST POPULAR</div>
+                    <h3 style="margin-top: 40px; color: #1f2937; font-size: 1.8rem;">Full UI/UX Learning Platform</h3>
+                    <div class="price">$14.99<span style="font-size: 1.5rem; color: #6b7280;">/month</span></div>
+                    <p class="price-desc">Monthly subscription • Cancel anytime • Full platform access</p>
+                    
+                    <div style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; padding: 15px; border-radius: 10px; margin: 20px 0; font-weight: 600;">
+                        🎯 Access ALL Future Dev Masters Courses!
+                    </div>
+                    
+                    <ul class="pricing-features">
+                        <li>Complete Frontend Development Course</li>
+                        <li>Backend Development Mastery</li>
+                        <li>Advanced React & Next.js</li>
+                        <li>UI/UX Design Fundamentals</li>
+                        <li>Mobile App Development</li>
+                        <li>DevOps & Cloud Deployment</li>
+                        <li>AI Integration & Modern Tools</li>
+                        <li>Live Coding Sessions & Q&A</li>
+                        <li>Priority Support & Mentorship</li>
+                        <li>Job Interview Preparation</li>
+                        <li>Portfolio Review & Feedback</li>
+                    </ul>
+                    
+                    <button class="final-cta" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);" onclick="startPayment('monthly')">🎯 Start Monthly Membership</button>
+                    <p style="font-size: 0.9rem; color: #6b7280;">Cancel anytime • No long-term commitment</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function startPayment(planType) {
+            if (planType === 'one-time') {
+                alert('🚀 Redirecting to secure checkout...\n\nOne-Time Payment: $6.99\n\nThis would integrate with:\n• Stripe\n• PayPal\n• Square\n\nFor lifetime access to the Frontend curriculum!');
+            } else if (planType === 'monthly') {
+                alert('🎯 Redirecting to subscription signup...\n\nMonthly Subscription: $14.99/month\n\nThis would integrate with:\n• Stripe Subscriptions\n• PayPal Recurring\n• Subscription Management\n\nFor full access to ALL Dev Masters courses!');
+            }
+            
+            // Example implementations:
+            // window.location.href = 'https://your-payment-processor.com/checkout?plan=' + planType;
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Add urgency timer (optional)
+        function updateTimer() {
+            const timer = document.querySelector('.urgency');
+            if (timer) {
+                const hours = Math.floor(Math.random() * 48) + 1;
+                const minutes = Math.floor(Math.random() * 60);
+                timer.innerHTML = `⏰ Price increases to $49.99 in ${hours}h ${minutes}m!`;
+            }
+        }
+        
+        updateTimer();
+        setInterval(updateTimer, 60000); // Update every minute
+    </script>
+</body>
+</html>

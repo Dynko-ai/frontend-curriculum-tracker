@@ -18,19 +18,22 @@ window.CURRICULUM_DATA = {
               "id": "w1d1t1",
               "text": "Install Cursor with extensions: Prettier, ESLint, Live Server",
               "type": "setup",
-              "xp": 10
+              "xp": 10,
+              "video": "0fKg7e37bQE"
             },
             {
               "id": "w1d1t2",
               "text": "Set up Git and create your first repository",
               "type": "setup",
-              "xp": 10
+              "xp": 10,
+              "video": "USjZcfj8yxE"
             },
             {
               "id": "w1d1t3",
               "text": "Create a basic HTML5 document structure",
               "type": "code",
-              "xp": 15
+              "xp": 15,
+              "video": "UB1O30fR-EE"
             }
           ]
         },
@@ -78,7 +81,8 @@ window.CURRICULUM_DATA = {
               "id": "w1d3t3",
               "text": "Create a simple styled webpage using external CSS",
               "type": "project",
-              "xp": 20
+              "xp": 20,
+              "video": "yfoY53QXEnI"
             }
           ]
         },
@@ -274,7 +278,8 @@ window.CURRICULUM_DATA = {
               "id": "w3d1t1",
               "text": "Learn JavaScript variables, data types, and operators",
               "type": "study",
-              "xp": 15
+              "xp": 15,
+              "video": "W6NZfCO5SIk"
             },
             {
               "id": "w3d1t2",

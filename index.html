@@ -19,9 +19,23 @@
     <header class="header">
         <div class="container">
             <h1 class="logo">Frontend Developer Curriculum</h1>
-            <div class="user-stats">
-                <!-- Progress Stats (always visible) -->
-                <div class="progress-stats" id="progressStats">
+            <div class="header-right">
+                <!-- User Login Section -->
+                <div class="user-login-header" id="userLoginHeader">
+                    <!-- Not logged in state -->
+                    <div class="user-auth-prompt" id="userAuthPrompt">
+                        <button class="user-login-btn" id="userLoginBtn">👤 User Login</button>
+                    </div>
+                    <!-- Logged in state (hidden by default) -->
+                    <div class="user-auth-success hidden" id="userAuthSuccess">
+                        <span class="logged-user-email" id="loggedUserEmailDisplay"></span>
+                        <button class="user-logout-btn" id="userLogoutBtn">Logout</button>
+                    </div>
+                </div>
+                
+                <div class="user-stats">
+                    <!-- Progress Stats (always visible) -->
+                    <div class="progress-stats" id="progressStats">
                     <div class="level-badge" id="levelBadge">
                         <span class="level-text">Level 1</span>
                     </div>
@@ -32,12 +46,57 @@
                         <span class="xp-text" id="xpText">0 / 100 XP</span>
                     </div>
                 </div>
+                </div>
             </div>
         </div>
     </header>
 
     <main class="main">
         <div class="container">
+            <!-- Email Updates Section (Optional Login) -->
+            <section class="email-updates-section" id="emailUpdatesSection">
+                <div class="email-updates-content">
+                    <div class="email-updates-text">
+                        <h3>📧 Get Daily Progress Updates</h3>
+                        <p>Want to receive email summaries of Michael's daily accomplishments? Login to subscribe to updates!</p>
+                    </div>
+                    <div class="email-updates-auth" id="emailUpdatesAuth">
+                        <!-- Not logged in state -->
+                        <div class="auth-prompt" id="authPrompt">
+                            <button class="email-login-btn" id="emailLoginBtn">🔐 Login for Email Updates</button>
+                        </div>
+                        <!-- Logged in state (hidden by default) -->
+                        <div class="auth-success hidden" id="authSuccess">
+                            <div class="user-info">
+                                <span class="user-email" id="userEmailDisplay"></span>
+                                <div class="email-preferences">
+                                    <div class="preference-group">
+                                        <label for="emailTimeSelect">📅 Daily email time:</label>
+                                        <select id="emailTimeSelect" class="email-time-select">
+                                            <option value="08:00">8:00 AM</option>
+                                            <option value="09:00" selected>9:00 AM</option>
+                                            <option value="10:00">10:00 AM</option>
+                                            <option value="11:00">11:00 AM</option>
+                                            <option value="12:00">12:00 PM</option>
+                                            <option value="13:00">1:00 PM</option>
+                                            <option value="14:00">2:00 PM</option>
+                                            <option value="15:00">3:00 PM</option>
+                                            <option value="16:00">4:00 PM</option>
+                                            <option value="17:00">5:00 PM</option>
+                                            <option value="18:00">6:00 PM</option>
+                                            <option value="19:00">7:00 PM</option>
+                                            <option value="20:00">8:00 PM</option>
+                                        </select>
+                                    </div>
+                                    <span class="subscription-status">✅ Subscribed to daily updates</span>
+                                </div>
+                            </div>
+                            <button class="email-logout-btn" id="emailLogoutBtn">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Public Progress View -->
             <div class="public-progress-content" id="publicProgressContent">
                 <!-- Progress Header -->
@@ -47,6 +106,17 @@
                     <div class="view-only-notice">
                         <span class="notice-icon">👀</span>
                         <span>You're viewing Michael's real progress - tasks cannot be modified</span>
+                    </div>
+                    
+                    <!-- CTA Button for Full Access -->
+                    <div class="cta-section">
+                        <button class="full-access-cta" id="fullAccessCTA" onclick="window.open('landing.html', '_blank')">
+                            <div class="cta-content">
+                                <div class="cta-main-text">🚀 Get Full Access to Curriculum</div>
+                                <div class="cta-features">Complete Tasks • Interactive Quizzes • Final Exams • <span class="highlight-text">"Instructional Videos"</span></div>
+                                <div class="cta-price">One-Time Subscription: <strong>$6.99 USD</strong> <span style="font-size: 0.8em; color: #ec4899; font-weight: normal;">(includes 1 learning session)</span></div>
+                            </div>
+                        </button>
                     </div>
                 </section>
                 
@@ -109,6 +179,7 @@
     <script src="scripts/checklist.js"></script>
     <script src="scripts/gamification.js"></script>
     <script src="scripts/quiz-system.js"></script>
+    <script src="scripts/auth0-system.js?v=5"></script>
     <script src="scripts/public-progress.js"></script>
     <script src="scripts/app.js"></script>
 </body>

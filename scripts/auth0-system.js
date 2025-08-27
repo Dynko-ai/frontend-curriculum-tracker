@@ -72,22 +72,28 @@ class Auth0System {
      * Set up UI event listeners
      */
     setupEventListeners() {
-        // Header login button
-        const loginBtn = document.getElementById('loginBtn');
-        if (loginBtn) {
-            loginBtn.addEventListener('click', () => this.login());
+        // Email updates login button
+        const emailLoginBtn = document.getElementById('emailLoginBtn');
+        if (emailLoginBtn) {
+            emailLoginBtn.addEventListener('click', () => this.login());
         }
 
-        // CTA login button
-        const ctaLoginBtn = document.getElementById('ctaLoginBtn');
-        if (ctaLoginBtn) {
-            ctaLoginBtn.addEventListener('click', () => this.login());
+        // Email updates logout button
+        const emailLogoutBtn = document.getElementById('emailLogoutBtn');
+        if (emailLogoutBtn) {
+            emailLogoutBtn.addEventListener('click', () => this.logout());
         }
 
-        // Logout button
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', () => this.logout());
+        // User login button
+        const userLoginBtn = document.getElementById('userLoginBtn');
+        if (userLoginBtn) {
+            userLoginBtn.addEventListener('click', () => this.loginUser());
+        }
+
+        // User logout button
+        const userLogoutBtn = document.getElementById('userLogoutBtn');
+        if (userLogoutBtn) {
+            userLogoutBtn.addEventListener('click', () => this.logoutUser());
         }
     }
 
@@ -101,8 +107,10 @@ class Auth0System {
             if (this.isAuthenticated) {
                 this.currentUser = await this.auth0Client.getUser();
                 await this.handleLogin(this.currentUser);
+                await this.handleUserAuthChange();
             } else {
                 this.handleLogout();
+                this.showUserLoggedOut();
             }
         } catch (error) {
             console.error('Auth status check error:', error);
@@ -178,129 +186,54 @@ class Auth0System {
      * Update UI for authenticated users
      */
     updateAuthenticatedUI() {
-        // Hide authentication gate
-        const authGate = document.getElementById('authGate');
-        if (authGate) {
-            authGate.style.display = 'none';
+        // Update email updates section
+        const authPrompt = document.getElementById('authPrompt');
+        const authSuccess = document.getElementById('authSuccess');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+        if (authPrompt) {
+            authPrompt.classList.add('hidden');
+        }
+        if (authSuccess) {
+            authSuccess.classList.remove('hidden');
+        }
+        if (userEmailDisplay && this.currentUser) {
+            userEmailDisplay.textContent = this.currentUser.email;
         }
 
-        // Show authenticated content
-        const authenticatedContent = document.getElementById('authenticatedContent');
-        if (authenticatedContent) {
-            authenticatedContent.classList.remove('hidden');
-        }
+        // Set up email time preference
+        this.setupEmailTimePreference();
 
-        // Update header auth section
-        const loginBtn = document.getElementById('loginBtn');
-        const userInfo = document.getElementById('userInfo');
-        const userEmail = document.getElementById('userEmail');
-        const progressStats = document.getElementById('progressStats');
-
-        if (loginBtn) loginBtn.style.display = 'none';
-        if (userInfo) {
-            userInfo.classList.remove('hidden');
-            if (userEmail && this.currentUser) {
-                userEmail.textContent = this.currentUser.email;
-            }
-        }
-        if (progressStats) {
-            progressStats.classList.remove('hidden');
-        }
-
-        // Update page title
-        document.title = "Michael's Progress Journey - Frontend Developer Curriculum";
+        // Page remains publicly accessible - no other UI changes needed
+        console.log('User authenticated for email updates:', this.currentUser.email);
     }
 
     /**
      * Update UI for unauthenticated users
      */
     updateUnauthenticatedUI() {
-        // Show authentication gate
-        const authGate = document.getElementById('authGate');
-        if (authGate) {
-            authGate.style.display = 'block';
+        // Update email updates section
+        const authPrompt = document.getElementById('authPrompt');
+        const authSuccess = document.getElementById('authSuccess');
+
+        if (authPrompt) {
+            authPrompt.classList.remove('hidden');
+        }
+        if (authSuccess) {
+            authSuccess.classList.add('hidden');
         }
 
-        // Hide authenticated content
-        const authenticatedContent = document.getElementById('authenticatedContent');
-        if (authenticatedContent) {
-            authenticatedContent.classList.add('hidden');
-        }
-
-        // Update header auth section
-        const loginBtn = document.getElementById('loginBtn');
-        const userInfo = document.getElementById('userInfo');
-        const progressStats = document.getElementById('progressStats');
-
-        if (loginBtn) loginBtn.style.display = 'block';
-        if (userInfo) userInfo.classList.add('hidden');
-        if (progressStats) progressStats.classList.add('hidden');
-
-        // Reset page title
-        document.title = "Frontend Developer Curriculum Tracker";
+        // Page remains publicly accessible - no other UI changes needed
+        console.log('User logged out - email updates disabled');
     }
 
     /**
-     * Load Michael's progress data
+     * Load Michael's progress data (not needed - handled by public viewer)
      */
     async loadMichaelProgress() {
-        try {
-            // For now, we'll use placeholder data
-            // In Phase 2, this will load from michael-progress.json
-            const placeholderProgress = {
-                totalXP: 125,
-                currentLevel: 3,
-                completedTasks: 12,
-                totalTasks: 120,
-                percentage: 10,
-                achievements: ['first-steps', 'quick-learner', 'daily-warrior']
-            };
-
-            // Update progress displays with Michael's data
-            this.updateProgressDisplays(placeholderProgress);
-
-        } catch (error) {
-            console.error('Error loading Michael\'s progress:', error);
-        }
-    }
-
-    /**
-     * Update progress displays with Michael's data
-     */
-    updateProgressDisplays(progressData) {
-        // Update XP and level
-        const levelBadge = document.getElementById('levelBadge');
-        const xpText = document.getElementById('xpText');
-        const xpFill = document.getElementById('xpFill');
-
-        if (levelBadge) {
-            const levelText = levelBadge.querySelector('.level-text');
-            if (levelText) {
-                levelText.textContent = `Level ${progressData.currentLevel}`;
-            }
-        }
-
-        if (xpText) {
-            const xpForNextLevel = progressData.currentLevel * 100;
-            xpText.textContent = `${progressData.totalXP} / ${xpForNextLevel} XP`;
-        }
-
-        if (xpFill) {
-            const xpForNextLevel = progressData.currentLevel * 100;
-            const xpProgress = (progressData.totalXP % 100) / 100;
-            xpFill.style.width = `${xpProgress * 100}%`;
-        }
-
-        // Update overall progress
-        const completedTasks = document.getElementById('completedTasks');
-        const totalTasks = document.getElementById('totalTasks');
-        const completionPercentage = document.getElementById('completionPercentage');
-        const overallProgress = document.getElementById('overallProgress');
-
-        if (completedTasks) completedTasks.textContent = progressData.completedTasks;
-        if (totalTasks) totalTasks.textContent = progressData.totalTasks;
-        if (completionPercentage) completionPercentage.textContent = progressData.percentage;
-        if (overallProgress) overallProgress.style.width = `${progressData.percentage}%`;
+        // Progress data is handled by the public progress viewer
+        // This method is kept for compatibility
+        console.log('Auth0 authenticated - progress already loaded by public viewer');
     }
 
     /**
@@ -402,12 +335,287 @@ class Auth0System {
     }
 
     /**
+     * Set up email time preference functionality
+     */
+    setupEmailTimePreference() {
+        const emailTimeSelect = document.getElementById('emailTimeSelect');
+        if (!emailTimeSelect || !this.currentUser) return;
+
+        // Load saved preference
+        const savedPreference = this.loadEmailPreference();
+        if (savedPreference && savedPreference.emailTime) {
+            emailTimeSelect.value = savedPreference.emailTime;
+        }
+
+        // Listen for changes
+        emailTimeSelect.addEventListener('change', (e) => {
+            this.saveEmailPreference({
+                emailTime: e.target.value,
+                userId: this.currentUser.sub,
+                email: this.currentUser.email
+            });
+            this.showPreferenceUpdateNotification(e.target.value);
+        });
+    }
+
+    /**
+     * Load email preferences from localStorage
+     */
+    loadEmailPreference() {
+        if (!this.currentUser) return null;
+        const preferences = JSON.parse(localStorage.getItem('email-preferences') || '{}');
+        return preferences[this.currentUser.sub];
+    }
+
+    /**
+     * Save email preferences to localStorage
+     */
+    saveEmailPreference(preference) {
+        const preferences = JSON.parse(localStorage.getItem('email-preferences') || '{}');
+        preferences[this.currentUser.sub] = preference;
+        localStorage.setItem('email-preferences', JSON.stringify(preferences));
+        
+        console.log('Email preference saved:', preference);
+    }
+
+    /**
+     * Show notification when preference is updated
+     */
+    showPreferenceUpdateNotification(time) {
+        const notification = document.createElement('div');
+        notification.className = 'preference-notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <span class="notification-icon">⏰</span>
+                <span class="notification-text">Daily emails will be sent at ${this.formatTime(time)}</span>
+            </div>
+        `;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: #3b82f6;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        `;
+
+        document.body.appendChild(notification);
+
+        // Remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 3000);
+    }
+
+    /**
+     * Format time for display
+     */
+    formatTime(time24) {
+        const [hours, minutes] = time24.split(':');
+        const hour12 = parseInt(hours);
+        const ampm = hour12 >= 12 ? 'PM' : 'AM';
+        const displayHour = hour12 === 0 ? 12 : hour12 > 12 ? hour12 - 12 : hour12;
+        return `${displayHour}:${minutes} ${ampm}`;
+    }
+
+    /**
      * Get current authentication status
      */
     getAuthStatus() {
         return {
             isAuthenticated: this.isAuthenticated,
             user: this.currentUser
+        };
+    }
+
+    /**
+     * User login for progress tracking
+     */
+    async loginUser() {
+        try {
+            await this.auth0Client.loginWithRedirect({
+                appState: { target: 'user-progress' }
+            });
+        } catch (error) {
+            console.error('User login error:', error);
+            this.showError('Login failed. Please try again.');
+        }
+    }
+
+    /**
+     * User logout
+     */
+    async logoutUser() {
+        try {
+            await this.auth0Client.logout({
+                logoutParams: {
+                    returnTo: window.location.origin
+                }
+            });
+        } catch (error) {
+            console.error('User logout error:', error);
+            this.showError('Logout failed. Please try again.');
+        }
+    }
+
+    /**
+     * Handle user authentication state changes
+     */
+    async handleUserAuthChange() {
+        try {
+            this.isAuthenticated = await this.auth0Client.isAuthenticated();
+            
+            if (this.isAuthenticated) {
+                this.currentUser = await this.auth0Client.getUser();
+                this.showUserLoggedIn();
+                await this.loadUserProgress();
+            } else {
+                this.showUserLoggedOut();
+                this.clearUserProgress();
+            }
+        } catch (error) {
+            console.error('User auth status check error:', error);
+        }
+    }
+
+    /**
+     * Show user logged in UI
+     */
+    showUserLoggedIn() {
+        const userAuthPrompt = document.getElementById('userAuthPrompt');
+        const userAuthSuccess = document.getElementById('userAuthSuccess');
+        const userEmailDisplay = document.getElementById('loggedUserEmailDisplay');
+
+        if (userAuthPrompt) userAuthPrompt.classList.add('hidden');
+        if (userAuthSuccess) userAuthSuccess.classList.remove('hidden');
+        if (userEmailDisplay) userEmailDisplay.textContent = this.currentUser?.email || 'User';
+    }
+
+    /**
+     * Show user logged out UI
+     */
+    showUserLoggedOut() {
+        const userAuthPrompt = document.getElementById('userAuthPrompt');
+        const userAuthSuccess = document.getElementById('userAuthSuccess');
+
+        if (userAuthPrompt) userAuthPrompt.classList.remove('hidden');
+        if (userAuthSuccess) userAuthSuccess.classList.add('hidden');
+    }
+
+    /**
+     * Load user's personal progress from localStorage
+     */
+    async loadUserProgress() {
+        if (!this.currentUser?.sub) return;
+
+        const userProgressKey = `user_progress_${this.currentUser.sub}`;
+        const savedProgress = localStorage.getItem(userProgressKey);
+
+        if (savedProgress) {
+            try {
+                const progressData = JSON.parse(savedProgress);
+                // Apply saved progress to the UI
+                this.restoreUserProgress(progressData);
+                console.log('User progress loaded:', progressData);
+            } catch (error) {
+                console.error('Error loading user progress:', error);
+            }
+        }
+    }
+
+    /**
+     * Save user's progress to localStorage
+     */
+    async saveUserProgress(progressData) {
+        if (!this.currentUser?.sub) return;
+
+        const userProgressKey = `user_progress_${this.currentUser.sub}`;
+        try {
+            localStorage.setItem(userProgressKey, JSON.stringify(progressData));
+            console.log('User progress saved for:', this.currentUser.email);
+        } catch (error) {
+            console.error('Error saving user progress:', error);
+        }
+    }
+
+    /**
+     * Restore user progress to the UI
+     */
+    restoreUserProgress(progressData) {
+        // Restore completed tasks
+        if (progressData.completedTasks) {
+            progressData.completedTasks.forEach(taskId => {
+                const checkbox = document.querySelector(`input[data-task="${taskId}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    checkbox.closest('.task-item')?.classList.add('completed');
+                }
+            });
+        }
+
+        // Restore XP and level
+        if (progressData.currentXP !== undefined) {
+            const xpText = document.getElementById('xpText');
+            const xpFill = document.getElementById('xpFill');
+            const levelBadge = document.getElementById('levelBadge');
+            
+            if (xpText) xpText.textContent = `${progressData.currentXP} / ${progressData.nextLevelXP || 100} XP`;
+            if (levelBadge) levelBadge.querySelector('.level-text').textContent = `Level ${progressData.currentLevel || 1}`;
+            
+            // Update XP bar
+            if (xpFill) {
+                const percentage = (progressData.currentXP / (progressData.nextLevelXP || 100)) * 100;
+                xpFill.style.width = `${Math.min(percentage, 100)}%`;
+            }
+        }
+    }
+
+    /**
+     * Clear user progress from UI (when logged out)
+     */
+    clearUserProgress() {
+        // Reset all checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][data-task]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.closest('.task-item')?.classList.remove('completed');
+        });
+
+        // Reset progress displays to default
+        const xpText = document.getElementById('xpText');
+        const xpFill = document.getElementById('xpFill');
+        const levelBadge = document.getElementById('levelBadge');
+        
+        if (xpText) xpText.textContent = '0 / 100 XP';
+        if (levelBadge) levelBadge.querySelector('.level-text').textContent = 'Level 1';
+        if (xpFill) xpFill.style.width = '0%';
+    }
+
+    /**
+     * Get current user progress data
+     */
+    getCurrentProgressData() {
+        const completedTasks = Array.from(document.querySelectorAll('input[type="checkbox"][data-task]:checked'))
+            .map(checkbox => checkbox.getAttribute('data-task'));
+
+        const xpText = document.getElementById('xpText');
+        const levelBadge = document.getElementById('levelBadge');
+        const currentXP = xpText ? parseInt(xpText.textContent.match(/(\d+) \/ \d+ XP/)?.[1] || '0') : 0;
+        const currentLevel = levelBadge ? parseInt(levelBadge.querySelector('.level-text').textContent.replace('Level ', '')) : 1;
+
+        return {
+            completedTasks,
+            currentXP,
+            currentLevel,
+            lastSaved: new Date().toISOString(),
+            userEmail: this.currentUser?.email
         };
     }
 }

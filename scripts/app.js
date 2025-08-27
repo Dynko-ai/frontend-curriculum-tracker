@@ -36,6 +36,8 @@ class CurriculumApp {
             // Update progress displays
             this.updateProgressDisplays();
             
+            // Load user progress if authenticated
+            setTimeout(() => this.loadUserProgress(), 1000);
             
             this.isInitialized = true;
         } catch (error) {
@@ -204,6 +206,7 @@ class CurriculumApp {
                     <p>${week.milestone}</p>
                 </div>
                 ${this.createDaysHTML(week)}
+                ${this.createWeeklyTestHTML(week.id)}
             </div>
         `;
 
@@ -233,7 +236,6 @@ class CurriculumApp {
                     <div class="tasks-list">
                         ${day.tasks.map(task => this.createTaskHTML(task)).join('')}
                     </div>
-                    ${this.createDayQuizHTML(week.id, day.day)}
                 </div>
             `;
         }).join('');
@@ -267,9 +269,15 @@ class CurriculumApp {
             disabled = true;
         } else if (quizStatus && quizStatus.passed) {
             buttonClass += ' completed';
-            buttonText = `✅ Quiz Completed (${quizStatus.score}%)`;
+            buttonText = `✅ Quiz Completed`;
         } else if (quizStatus && !quizStatus.passed) {
-            buttonText = `🔄 Retake Quiz (${quizStatus.score}%)`;
+            buttonText = `🔄 Retake Quiz`;
+        }
+
+        // Add quiz score display for completed quizzes
+        let scoreDisplay = '';
+        if (quizStatus && (quizStatus.passed || quizStatus.score !== undefined)) {
+            scoreDisplay = `<span class="quiz-score">${quizStatus.score}%</span>`;
         }
 
         return `
@@ -279,6 +287,7 @@ class CurriculumApp {
                         ${disabled ? 'disabled' : ''}>
                     ${buttonText}
                 </button>
+                ${scoreDisplay}
             </div>
         `;
     }
@@ -291,13 +300,213 @@ class CurriculumApp {
     }
 
     /**
+     * Get task quiz status
+     */
+    getTaskQuizStatus(taskId) {
+        const taskQuizProgress = JSON.parse(localStorage.getItem('task-quiz-progress') || '{}');
+        return taskQuizProgress[taskId];
+    }
+
+    /**
+     * Start task quiz
+     */
+    startTaskQuiz(taskId) {
+        this.quizSystem.startTaskQuiz(taskId);
+    }
+
+    /**
+     * Get weekly test status
+     */
+    getWeeklyTestStatus(weekId) {
+        const weeklyTestProgress = JSON.parse(localStorage.getItem('weekly-test-progress') || '{}');
+        return weeklyTestProgress[`week${weekId}`];
+    }
+
+    /**
+     * Start weekly test
+     */
+    startWeeklyTest(weekId) {
+        this.quizSystem.startWeeklyTest(weekId);
+    }
+
+    /**
+     * Open video modal for task tutorials
+     */
+    openVideoModal(videoId, taskTitle) {
+        this.createVideoModal(videoId, taskTitle);
+    }
+
+    /**
+     * Create and show video modal
+     */
+    createVideoModal(videoId, taskTitle) {
+        // Remove existing modal if any
+        const existingModal = document.getElementById('videoModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Create modal HTML
+        const modal = document.createElement('div');
+        modal.id = 'videoModal';
+        modal.className = 'video-modal';
+        modal.innerHTML = `
+            <div class="video-modal-overlay" onclick="window.app.closeVideoModal()"></div>
+            <div class="video-modal-content">
+                <div class="video-modal-header">
+                    <h3>📺 How To: ${taskTitle}</h3>
+                    <button class="video-modal-close" onclick="window.app.closeVideoModal()">&times;</button>
+                </div>
+                <div class="video-modal-body">
+                    <div class="video-container">
+                        <iframe 
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                            title="How To Video" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                    <div class="video-actions">
+                        <button class="video-action-btn" onclick="window.open('https://www.youtube.com/watch?v=${videoId}', '_blank')">
+                            🔗 Watch on YouTube
+                        </button>
+                        <button class="video-action-btn" onclick="window.app.closeVideoModal()">
+                            ✅ Close Video
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Add to document
+        document.body.appendChild(modal);
+
+        // Show modal with animation
+        setTimeout(() => {
+            modal.classList.add('show');
+        }, 10);
+
+        // Prevent body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    /**
+     * Close video modal
+     */
+    closeVideoModal() {
+        const modal = document.getElementById('videoModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.remove();
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+    }
+
+    /**
+     * Create weekly test HTML
+     */
+    createWeeklyTestHTML(weekId) {
+        // Check if all tasks in the week are completed
+        const week = this.checklistManager.getWeek(weekId);
+        if (!week) return '';
+
+        const allTasksCompleted = week.days.every(day => 
+            day.tasks.every(task => this.checklistManager.isTaskCompleted(task.id))
+        );
+
+        const weekTestStatus = this.getWeeklyTestStatus(weekId);
+        
+        if (!allTasksCompleted) {
+            return `
+                <div class="weekly-test-section">
+                    <div class="weekly-test-locked">
+                        <h4>🏆 Weekly Comprehensive Test</h4>
+                        <p>Complete all tasks in this week to unlock the comprehensive test</p>
+                        <button class="weekly-test-btn disabled" disabled>
+                            🔒 Complete All Tasks First
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        let testHTML = '';
+        if (!weekTestStatus) {
+            // Test not taken yet
+            testHTML = `
+                <div class="weekly-test-section">
+                    <div class="weekly-test-available">
+                        <h4>🏆 Weekly Comprehensive Test</h4>
+                        <p>Test your knowledge of everything learned this week (15-20 questions)</p>
+                        <button class="weekly-test-btn" onclick="window.app.startWeeklyTest(${weekId})">
+                            🧠 Take Comprehensive Test
+                        </button>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Test completed
+            const scoreClass = weekTestStatus.passed ? 'passed' : 'failed';
+            testHTML = `
+                <div class="weekly-test-section">
+                    <div class="weekly-test-completed ${scoreClass}">
+                        <h4>🏆 Weekly Comprehensive Test</h4>
+                        <div class="test-result">
+                            <span class="test-status">${weekTestStatus.passed ? '✅ Passed' : '🔄 Retake Available'}</span>
+                            <span class="test-score">${weekTestStatus.score}%</span>
+                        </div>
+                        ${!weekTestStatus.passed ? `
+                            <button class="weekly-test-btn retake" onclick="window.app.startWeeklyTest(${weekId})">
+                                🔄 Retake Test
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        return testHTML;
+    }
+
+    /**
      * Create HTML for a single task
      */
     createTaskHTML(task) {
         const isCompleted = this.checklistManager.isTaskCompleted(task.id);
         const tutorialButton = task.tutorial ? 
             `<button class="tutorial-btn" data-tutorial="${task.tutorial}">📖 Tutorial</button>` : '';
+        const videoButton = task.video ? 
+            `<button class="video-btn" onclick="window.app.openVideoModal('${task.video}', '${task.text.replace(/'/g, "\\'")}')">📺 How To Video</button>` : '';
         const cmsIcon = task.type === 'setup' && task.text.toLowerCase().includes('sanity') ? '🗄️' : '';
+        
+        // Task quiz system
+        const taskQuizStatus = this.getTaskQuizStatus(task.id);
+        let taskQuizHTML = '';
+        
+        if (isCompleted && !taskQuizStatus) {
+            // Task completed but quiz not taken
+            taskQuizHTML = `
+                <div class="task-quiz-section">
+                    <button class="task-quiz-btn" onclick="window.app.startTaskQuiz('${task.id}')">
+                        🧠 Take 5-Question Quiz
+                    </button>
+                </div>
+            `;
+        } else if (taskQuizStatus) {
+            // Quiz completed - show score
+            const scoreClass = taskQuizStatus.passed ? 'passed' : 'failed';
+            taskQuizHTML = `
+                <div class="task-quiz-section">
+                    <div class="task-quiz-completed ${scoreClass}">
+                        <span class="quiz-status">${taskQuizStatus.passed ? '✅' : '🔄'} Quiz ${taskQuizStatus.passed ? 'Completed' : 'Retake'}</span>
+                        <span class="quiz-score">${taskQuizStatus.score}%</span>
+                    </div>
+                </div>
+            `;
+        }
         
         return `
             <div class="task-item ${isCompleted ? 'completed' : ''}" data-task-id="${task.id}">
@@ -313,7 +522,9 @@ class CurriculumApp {
                         <span class="task-type">${task.type}</span>
                         <span class="task-xp">+${task.xp} XP</span>
                         ${tutorialButton}
+                        ${videoButton}
                     </div>
+                    ${taskQuizHTML}
                 </div>
             </div>
         `;
@@ -368,6 +579,9 @@ class CurriculumApp {
                 this.gamificationSystem.showXPGain(task.xp, taskElement);
             }
         }
+        
+        // Save user progress if logged in
+        this.saveUserProgress();
         
         // Update week progress
         this.updateWeekProgress(task);
@@ -825,6 +1039,34 @@ class CurriculumApp {
         setTimeout(() => {
             document.body.removeChild(errorDiv);
         }, 5000);
+    }
+
+    /**
+     * Save user progress if authenticated
+     */
+    saveUserProgress() {
+        if (window.auth0System && window.auth0System.isAuthenticated && window.auth0System.currentUser) {
+            try {
+                const progressData = window.auth0System.getCurrentProgressData();
+                window.auth0System.saveUserProgress(progressData);
+            } catch (error) {
+                console.error('Error saving user progress:', error);
+            }
+        }
+    }
+
+    /**
+     * Load and restore user progress if authenticated
+     */
+    async loadUserProgress() {
+        if (window.auth0System && window.auth0System.isAuthenticated && window.auth0System.currentUser) {
+            try {
+                await window.auth0System.loadUserProgress();
+                this.updateProgressDisplays();
+            } catch (error) {
+                console.error('Error loading user progress:', error);
+            }
+        }
     }
 }
 

@@ -20,9 +20,18 @@ class ChecklistManager {
             // Use embedded data instead of fetch to avoid CORS issues
             if (window.CURRICULUM_DATA) {
                 this.curriculum = window.CURRICULUM_DATA;
+                console.log('Curriculum loaded with', this.curriculum.weeks?.length || 0, 'weeks');
                 return this.curriculum;
             } else {
-                throw new Error('Curriculum data not found');
+                // Retry mechanism - wait for CURRICULUM_DATA to load
+                console.log('CURRICULUM_DATA not ready, waiting...');
+                await new Promise(resolve => setTimeout(resolve, 100));
+                if (window.CURRICULUM_DATA) {
+                    this.curriculum = window.CURRICULUM_DATA;
+                    console.log('Curriculum loaded on retry with', this.curriculum.weeks?.length || 0, 'weeks');
+                    return this.curriculum;
+                }
+                throw new Error('Curriculum data not found after retry');
             }
         } catch (error) {
             console.error('Error loading curriculum:', error);
